@@ -12,6 +12,51 @@ interface ArticleDetails {
   };
 }
 
+const fetchWikiCommonsImage = async (title: string) => {
+  try {
+    const response = await fetch(
+      'https://en.wikipedia.org/w/api.php?' +
+      new URLSearchParams({
+        action: 'query',
+        format: 'json',
+        prop: 'images|imageinfo',
+        generator: 'search',
+        gsrsearch: title,
+        gsrnamespace: '6', // File namespace
+        gsrlimit: '1',
+        iiprop: 'url',
+        origin: '*'
+      })
+    );
+
+    const data = await response.json();
+    if (!data.query?.pages) return null;
+
+    const page = Object.values(data.query.pages)[0] as any;
+    if (!page?.images?.[0]?.title) return null;
+
+    // Get the actual image URL
+    const imageResponse = await fetch(
+      'https://en.wikipedia.org/w/api.php?' +
+      new URLSearchParams({
+        action: 'query',
+        format: 'json',
+        prop: 'imageinfo',
+        titles: page.images[0].title,
+        iiprop: 'url',
+        origin: '*'
+      })
+    );
+
+    const imageData = await imageResponse.json();
+    const imagePages = Object.values(imageData.query.pages)[0] as any;
+    return imagePages?.imageinfo?.[0]?.url;
+  } catch (error) {
+    console.error('Error fetching Commons image:', error);
+    return null;
+  }
+};
+
 const ArticleCard = ({ 
   title, 
   details,
@@ -25,6 +70,16 @@ const ArticleCard = ({
   currentIndex: number;
   total: number;
 }) => {
+  const [fallbackImage, setFallbackImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!details?.thumbnail?.source) {
+      fetchWikiCommonsImage(title).then(url => {
+        if (url) setFallbackImage(url);
+      });
+    }
+  }, [title, details?.thumbnail?.source]);
+
   const diff = index - currentIndex;
   const scale = 1 - Math.min(Math.abs(diff) * 0.1, 0.3);
   const translateX = diff * 100;
@@ -44,10 +99,10 @@ const ArticleCard = ({
     >
       <div className="backdrop-blur-xl bg-white/15 rounded-2xl overflow-hidden border border-white/30 shadow-xl" style={{ aspectRatio: '2.5/3.5' }}>
         <div className="relative h-48">
-          {details?.thumbnail?.source ? (
+          {(details?.thumbnail?.source || fallbackImage) ? (
             <div className="relative h-full w-full">
               <Image
-                src={details.thumbnail.source}
+                src={details?.thumbnail?.source || fallbackImage || ''}
                 alt={title}
                 fill
                 className="object-cover"
@@ -58,7 +113,7 @@ const ArticleCard = ({
             </div>
           ) : (
             <div className="h-full bg-gradient-to-br from-purple-500/30 to-blue-500/30 flex items-center justify-center">
-              <div className="animate-pulse text-white/60">Loading...</div>
+              <div className="animate-pulse text-white/60">No Image Available</div>
             </div>
           )}
           
