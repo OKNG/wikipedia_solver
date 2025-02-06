@@ -312,188 +312,193 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 p-8">
-      <main className="max-w-2xl mx-auto flex flex-col gap-8 items-center">
-        {path.length === 0 && (
-          <>
-            <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-purple-200">
-              Wikipedia Path Finder
-            </h1>
-            
-            <form onSubmit={findShortestPath} className="w-full space-y-4">
-              <div className="space-y-4">
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={startArticle}
-                    onChange={handleStartArticleChange}
-                    onFocus={() => setShowStartSuggestions(true)}
-                    placeholder="Start Article"
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 backdrop-blur-sm"
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-8">
+      <div className="max-w-lg mx-auto min-h-screen flex flex-col justify-center -mt-20">
+        <div className="space-y-8">
+          {path.length === 0 && (
+            <>
+              <h1 className="text-4xl font-light tracking-wide text-white">
+                Wiki Game Solver
+              </h1>
+              
+              <form onSubmit={findShortestPath} className="w-full space-y-4">
+                <div className="space-y-4">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={startArticle}
+                      onChange={handleStartArticleChange}
+                      onFocus={() => setShowStartSuggestions(true)}
+                      placeholder="Start Article"
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 backdrop-blur-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const randomArticle = await fetchRandomArticle();
+                        if (randomArticle) setStartArticle(randomArticle);
+                      }}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-white/70 hover:text-white/90 transition-colors"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                    </button>
+                    {showStartSuggestions && startSuggestions.length > 0 && (
+                      <div 
+                        className="absolute z-50 w-full mt-2 backdrop-blur-xl bg-white/10 border border-white/20 rounded-lg shadow-xl overflow-hidden"
+                        onMouseDown={(e) => e.preventDefault()}
+                      >
+                        {startSuggestions.map((suggestion) => (
+                          <button
+                            key={suggestion}
+                            className="w-full px-4 py-2 text-left text-white/90 hover:bg-white/20 transition-colors"
+                            onClick={() => {
+                              setStartArticle(suggestion);
+                              setShowStartSuggestions(false);
+                            }}
+                            type="button"
+                          >
+                            {suggestion}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={endArticle}
+                      onChange={handleEndArticleChange}
+                      onFocus={() => setShowEndSuggestions(true)}
+                      placeholder="End Article"
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 backdrop-blur-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const randomArticle = await fetchRandomArticle();
+                        if (randomArticle) setEndArticle(randomArticle);
+                      }}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-white/70 hover:text-white/90 transition-colors"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                    </button>
+                    {showEndSuggestions && endSuggestions.length > 0 && (
+                      <div 
+                        className="absolute z-50 w-full mt-2 backdrop-blur-xl bg-white/10 border border-white/20 rounded-lg shadow-xl overflow-hidden"
+                        onMouseDown={(e) => e.preventDefault()}
+                      >
+                        {endSuggestions.map((suggestion) => (
+                          <button
+                            key={suggestion}
+                            className="w-full px-4 py-2 text-left text-white/90 hover:bg-white/20 transition-colors"
+                            onClick={() => {
+                              setEndArticle(suggestion);
+                              setShowEndSuggestions(false);
+                            }}
+                            type="button"
+                          >
+                            {suggestion}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full px-4 py-3 bg-white/15 border-2 border-white/30 rounded-lg text-white font-medium 
+                  hover:bg-white/25 hover:border-white/40 transition-all backdrop-blur-sm 
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                  shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+                >
+                  {loading ? "Searching..." : "Find Path"}
+                </button>
+              </form>
+            </>
+          )}
+
+          {error && (
+            <div className="text-red-500 text-center">
+              {error}
+            </div>
+          )}
+
+          {loading && (
+            <div className="text-center">
+              Searching for path...
+            </div>
+          )}
+
+          {path.length > 0 && (
+            <div className="w-full">
+              <h2 className="text-2xl font-light tracking-wide mb-4 text-center text-white">
+                Path Found ({currentCardIndex + 1} of {path.length} steps)
+              </h2>
+              
+              <div
+                {...swipeHandlers}
+                className="relative h-[500px] w-full mb-8 touch-pan-y"
+              >
+                {path.map((article, index) => (
+                  <ArticleCard 
+                    key={article}
+                    title={article}
+                    details={articleDetails.get(article)}
+                    index={index}
+                    currentIndex={currentCardIndex}
+                    total={path.length}
                   />
+                ))}
+              </div>
+
+              <div className="flex flex-col items-center gap-4">
+                <div className="hidden md:flex justify-center gap-4">
                   <button
-                    type="button"
-                    onClick={async () => {
-                      const randomArticle = await fetchRandomArticle();
-                      if (randomArticle) setStartArticle(randomArticle);
-                    }}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-white/70 hover:text-white/90 transition-colors"
+                    onClick={() => setCurrentCardIndex(prev => Math.max(0, prev - 1))}
+                    disabled={currentCardIndex === 0}
+                    className="w-12 h-12 flex items-center justify-center bg-white/10 border border-white/20 rounded-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/20 transition-colors backdrop-blur-sm"
+                    aria-label="Previous article"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
                   </button>
-                  {showStartSuggestions && startSuggestions.length > 0 && (
-                    <div 
-                      className="absolute z-50 w-full mt-2 backdrop-blur-xl bg-white/10 border border-white/20 rounded-lg shadow-xl overflow-hidden"
-                      onMouseDown={(e) => e.preventDefault()}
-                    >
-                      {startSuggestions.map((suggestion) => (
-                        <button
-                          key={suggestion}
-                          className="w-full px-4 py-2 text-left text-white/90 hover:bg-white/20 transition-colors"
-                          onClick={() => {
-                            setStartArticle(suggestion);
-                            setShowStartSuggestions(false);
-                          }}
-                          type="button"
-                        >
-                          {suggestion}
-                        </button>
-                      ))}
-                    </div>
-                  )}
+                  <button
+                    onClick={() => setCurrentCardIndex(prev => Math.min(path.length - 1, prev + 1))}
+                    disabled={currentCardIndex === path.length - 1}
+                    className="w-12 h-12 flex items-center justify-center bg-white/10 border border-white/20 rounded-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/20 transition-colors backdrop-blur-sm"
+                    aria-label="Next article"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
                 </div>
                 
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={endArticle}
-                    onChange={handleEndArticleChange}
-                    onFocus={() => setShowEndSuggestions(true)}
-                    placeholder="End Article"
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 backdrop-blur-sm"
-                  />
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      const randomArticle = await fetchRandomArticle();
-                      if (randomArticle) setEndArticle(randomArticle);
-                    }}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-white/70 hover:text-white/90 transition-colors"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                  </button>
-                  {showEndSuggestions && endSuggestions.length > 0 && (
-                    <div 
-                      className="absolute z-50 w-full mt-2 backdrop-blur-xl bg-white/10 border border-white/20 rounded-lg shadow-xl overflow-hidden"
-                      onMouseDown={(e) => e.preventDefault()}
-                    >
-                      {endSuggestions.map((suggestion) => (
-                        <button
-                          key={suggestion}
-                          className="w-full px-4 py-2 text-left text-white/90 hover:bg-white/20 transition-colors"
-                          onClick={() => {
-                            setEndArticle(suggestion);
-                            setShowEndSuggestions(false);
-                          }}
-                          type="button"
-                        >
-                          {suggestion}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
-              >
-                {loading ? "Searching..." : "Find Path"}
-              </button>
-            </form>
-          </>
-        )}
-
-        {error && (
-          <div className="text-red-500 text-center">
-            {error}
-          </div>
-        )}
-
-        {loading && (
-          <div className="text-center">
-            Searching for path...
-          </div>
-        )}
-
-        {path.length > 0 && (
-          <div className="w-full">
-            <h2 className="text-xl font-semibold mb-4 text-center text-white">
-              Path Found ({currentCardIndex + 1} of {path.length} steps)
-            </h2>
-            
-            <div
-              {...swipeHandlers}
-              className="relative h-[500px] w-full mb-8 touch-pan-y"
-            >
-              {path.map((article, index) => (
-                <ArticleCard 
-                  key={article}
-                  title={article}
-                  details={articleDetails.get(article)}
-                  index={index}
-                  currentIndex={currentCardIndex}
-                  total={path.length}
-                />
-              ))}
-            </div>
-
-            <div className="flex flex-col items-center gap-4">
-              <div className="hidden md:flex justify-center gap-4">
                 <button
-                  onClick={() => setCurrentCardIndex(prev => Math.max(0, prev - 1))}
-                  disabled={currentCardIndex === 0}
-                  className="w-12 h-12 flex items-center justify-center bg-white/10 border border-white/20 rounded-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/20 transition-colors backdrop-blur-sm"
-                  aria-label="Previous article"
+                  onClick={() => {
+                    setPath([]);
+                    setCurrentCardIndex(0);
+                    setArticleDetails(new Map());
+                    setStartArticle("");
+                    setEndArticle("");
+                  }}
+                  className="px-6 py-2 bg-white/10 border border-white/20 rounded-lg text-white hover:bg-white/20 transition-colors backdrop-blur-sm"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-                <button
-                  onClick={() => setCurrentCardIndex(prev => Math.min(path.length - 1, prev + 1))}
-                  disabled={currentCardIndex === path.length - 1}
-                  className="w-12 h-12 flex items-center justify-center bg-white/10 border border-white/20 rounded-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/20 transition-colors backdrop-blur-sm"
-                  aria-label="Next article"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                  Start New Search
                 </button>
               </div>
-              
-              <button
-                onClick={() => {
-                  setPath([]);
-                  setCurrentCardIndex(0);
-                  setArticleDetails(new Map());
-                  setStartArticle("");
-                  setEndArticle("");
-                }}
-                className="px-6 py-2 bg-white/10 border border-white/20 rounded-lg text-white hover:bg-white/20 transition-colors backdrop-blur-sm"
-              >
-                Start New Search
-              </button>
             </div>
-          </div>
-        )}
-      </main>
+          )}
+        </div>
+      </div>
 
       {(showStartSuggestions || showEndSuggestions) && (
         <div 
