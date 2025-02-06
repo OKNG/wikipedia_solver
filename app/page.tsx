@@ -312,9 +312,9 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4 sm:p-8">
-      <div className="max-w-lg mx-auto min-h-screen flex flex-col justify-center -mt-20 sm:-mt-20 mt-0">
-        <div className="space-y-6 sm:space-y-8 pt-16 sm:pt-0">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-8">
+      <div className="max-w-lg mx-auto min-h-screen flex flex-col justify-center -mt-20">
+        <div className="space-y-8">
           {path.length === 0 && (
             <>
               <h1 className="text-4xl font-light tracking-wide text-white">
