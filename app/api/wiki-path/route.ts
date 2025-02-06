@@ -109,7 +109,7 @@ async function expandFrontier(
     const batch = currentLevel.slice(i, i + CONCURRENT_REQUESTS);
     const batchResults = await Promise.all(
       batch.map(async (item) => {
-        const links = await getWikiLinks(item.article);
+        const links = await getLinks(item.article);
         const results: QueueItem[] = [];
 
         for (const link of links) {
@@ -150,44 +150,41 @@ async function expandFrontier(
   return null;
 }
 
-async function getWikiLinks(article: string): Promise<string[]> {
-  const cacheKey = article.toLowerCase();
-  const cached = linksCache.get<string[]>(cacheKey);
-  
-  if (cached) {
-    return cached;
-  }
-
-  const endpoint = 'https://en.wikipedia.org/w/api.php';
-  const params = new URLSearchParams({
-    action: 'query',
-    titles: article,
-    prop: 'links',
-    pllimit: '500',
-    format: 'json',
-    origin: '*',
-    plnamespace: '0',
-  });
+async function getLinks(article: string): Promise<string[]> {
+  const cached = linksCache.get<string[]>(article);
+  if (cached) return cached;
 
   try {
-    const response = await fetch(`${endpoint}?${params}`);
+    const params = new URLSearchParams({
+      action: 'query',
+      titles: article,
+      prop: 'links',
+      pllimit: '500',
+      format: 'json',
+      origin: '*'
+    });
+
+    const response = await fetch(
+      `https://en.wikipedia.org/w/api.php?${params}`
+    );
+
     const data = await response.json();
 
     if (!data.query?.pages) {
       return [];
     }
 
-    const page = Object.values(data.query.pages)[0];
+    const page = Object.values(data.query.pages)[0] as { links?: { title: string }[] };
     
     if (!page.links) {
       return [];
     }
 
     const links = page.links.map(link => link.title);
-    linksCache.set(cacheKey, links);
+    linksCache.set(article, links);
     return links;
   } catch (error) {
-    console.error('Error fetching Wikipedia links:', error);
+    console.error('Error fetching links:', error);
     return [];
   }
 }
