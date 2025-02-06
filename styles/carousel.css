@@ -1,0 +1,24 @@
+.carousel-container {
+  position: relative;
+  overflow: visible;
+  width: 100%;
+  padding: 0 20px;  /* Add padding to allow overflow visibility */
+}
+
+@media (max-width: 768px) {
+  .carousel-container {
+    overflow: visible;
+    padding: 0 60px;  /* Increased from 40px to 60px to show more of adjacent cards */
+  }
+
+  .carousel-card {
+    width: calc(100% - 80px);  /* Adjusted to account for increased padding */
+    margin: 0 40px;  /* Increased from 20px to 40px */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);  /* Add shadow to make cards pop */
+    transition: transform 0.3s ease;  /* Smooth transform animation */
+  }
+
+  .carousel-card:hover {
+    transform: scale(1.02);  /* Subtle hover effect to indicate interactivity */
+  }
+} 
