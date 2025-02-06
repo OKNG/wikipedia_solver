@@ -191,11 +191,13 @@ export default function Home() {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  const findShortestPath = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const findShortestPath = async () => {
+    if (loading) return;
     setLoading(true);
-    setError("");
     setPath([]);
+    setCurrentCardIndex(0);
+    setArticleDetails(new Map());
+    setError("");
 
     try {
       // This is where we'll make the API call to our backend
@@ -321,7 +323,16 @@ export default function Home() {
                 Wiki Game Solver
               </h1>
               
-              <form onSubmit={findShortestPath} className="w-full space-y-4">
+              <form 
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  // Only submit if both fields have content
+                  if (startArticle && endArticle) {
+                    findShortestPath();
+                  }
+                }} 
+                className="w-full space-y-4"
+              >
                 <div className="space-y-4">
                   <div className="relative">
                     <input
