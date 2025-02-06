@@ -117,7 +117,7 @@ export default function Home() {
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => setCurrentCardIndex(prev => Math.min(path.length - 1, prev + 1)),
     onSwipedRight: () => setCurrentCardIndex(prev => Math.max(0, prev - 1)),
-    preventDefaultTouchmoveEvent: true,
+    preventScrollOnSwipe: true,
     trackMouse: true
   });
 
