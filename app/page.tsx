@@ -345,7 +345,11 @@ export default function Home() {
                         if (e.key === 'Enter') {
                           e.preventDefault();
                           e.currentTarget.blur();
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
                         }
+                      }}
+                      onBlur={() => {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
                       placeholder="Start Article"
                       className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 backdrop-blur-sm"
@@ -395,7 +399,11 @@ export default function Home() {
                         if (e.key === 'Enter') {
                           e.preventDefault();
                           e.currentTarget.blur();
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
                         }
+                      }}
+                      onBlur={() => {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
                       placeholder="End Article"
                       className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 backdrop-blur-sm"
