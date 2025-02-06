@@ -346,6 +346,9 @@ export default function Home() {
                           e.preventDefault();
                           e.currentTarget.blur();
                           window.scrollTo({ top: 0, behavior: 'smooth' });
+                          if (startArticle && endArticle) {
+                            findShortestPath();
+                          }
                         }
                       }}
                       onBlur={() => {
@@ -400,6 +403,9 @@ export default function Home() {
                           e.preventDefault();
                           e.currentTarget.blur();
                           window.scrollTo({ top: 0, behavior: 'smooth' });
+                          if (startArticle && endArticle) {
+                            findShortestPath();
+                          }
                         }
                       }}
                       onBlur={() => {
