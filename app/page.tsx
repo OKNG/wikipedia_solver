@@ -228,83 +228,87 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 p-8">
       <main className="max-w-2xl mx-auto flex flex-col gap-8 items-center">
-        <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-purple-200">
-          Wikipedia Path Finder
-        </h1>
-        
-        <form onSubmit={findShortestPath} className="w-full space-y-4">
-          <div className="space-y-4">
-            <div className="relative">
-              <input
-                type="text"
-                value={startArticle}
-                onChange={handleStartArticleChange}
-                onFocus={() => setShowStartSuggestions(true)}
-                placeholder="Start Article"
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 backdrop-blur-sm"
-              />
-              {showStartSuggestions && startSuggestions.length > 0 && (
-                <div 
-                  className="absolute z-50 w-full mt-2 backdrop-blur-xl bg-white/10 border border-white/20 rounded-lg shadow-xl overflow-hidden"
-                  onMouseDown={(e) => e.preventDefault()}
-                >
-                  {startSuggestions.map((suggestion) => (
-                    <button
-                      key={suggestion}
-                      className="w-full px-4 py-2 text-left text-white/90 hover:bg-white/20 transition-colors"
-                      onClick={() => {
-                        setStartArticle(suggestion);
-                        setShowStartSuggestions(false);
-                      }}
-                      type="button"
-                    >
-                      {suggestion}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+        {path.length === 0 && (
+          <>
+            <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-purple-200">
+              Wikipedia Path Finder
+            </h1>
             
-            <div className="relative">
-              <input
-                type="text"
-                value={endArticle}
-                onChange={handleEndArticleChange}
-                onFocus={() => setShowEndSuggestions(true)}
-                placeholder="End Article"
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 backdrop-blur-sm"
-              />
-              {showEndSuggestions && endSuggestions.length > 0 && (
-                <div 
-                  className="absolute z-50 w-full mt-2 backdrop-blur-xl bg-white/10 border border-white/20 rounded-lg shadow-xl overflow-hidden"
-                  onMouseDown={(e) => e.preventDefault()}
-                >
-                  {endSuggestions.map((suggestion) => (
-                    <button
-                      key={suggestion}
-                      className="w-full px-4 py-2 text-left text-white/90 hover:bg-white/20 transition-colors"
-                      onClick={() => {
-                        setEndArticle(suggestion);
-                        setShowEndSuggestions(false);
-                      }}
-                      type="button"
+            <form onSubmit={findShortestPath} className="w-full space-y-4">
+              <div className="space-y-4">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={startArticle}
+                    onChange={handleStartArticleChange}
+                    onFocus={() => setShowStartSuggestions(true)}
+                    placeholder="Start Article"
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 backdrop-blur-sm"
+                  />
+                  {showStartSuggestions && startSuggestions.length > 0 && (
+                    <div 
+                      className="absolute z-50 w-full mt-2 backdrop-blur-xl bg-white/10 border border-white/20 rounded-lg shadow-xl overflow-hidden"
+                      onMouseDown={(e) => e.preventDefault()}
                     >
-                      {suggestion}
-                    </button>
-                  ))}
+                      {startSuggestions.map((suggestion) => (
+                        <button
+                          key={suggestion}
+                          className="w-full px-4 py-2 text-left text-white/90 hover:bg-white/20 transition-colors"
+                          onClick={() => {
+                            setStartArticle(suggestion);
+                            setShowStartSuggestions(false);
+                          }}
+                          type="button"
+                        >
+                          {suggestion}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </div>
+                
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={endArticle}
+                    onChange={handleEndArticleChange}
+                    onFocus={() => setShowEndSuggestions(true)}
+                    placeholder="End Article"
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 backdrop-blur-sm"
+                  />
+                  {showEndSuggestions && endSuggestions.length > 0 && (
+                    <div 
+                      className="absolute z-50 w-full mt-2 backdrop-blur-xl bg-white/10 border border-white/20 rounded-lg shadow-xl overflow-hidden"
+                      onMouseDown={(e) => e.preventDefault()}
+                    >
+                      {endSuggestions.map((suggestion) => (
+                        <button
+                          key={suggestion}
+                          className="w-full px-4 py-2 text-left text-white/90 hover:bg-white/20 transition-colors"
+                          onClick={() => {
+                            setEndArticle(suggestion);
+                            setShowEndSuggestions(false);
+                          }}
+                          type="button"
+                        >
+                          {suggestion}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
-          >
-            {loading ? "Searching..." : "Find Path"}
-          </button>
-        </form>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
+              >
+                {loading ? "Searching..." : "Find Path"}
+              </button>
+            </form>
+          </>
+        )}
 
         {error && (
           <div className="text-red-500 text-center">
@@ -320,7 +324,7 @@ export default function Home() {
 
         {path.length > 0 && (
           <div className="w-full">
-            <h2 className="text-xl font-semibold mb-4 text-center">
+            <h2 className="text-xl font-semibold mb-4 text-center text-white">
               Path Found ({currentCardIndex + 1} of {path.length} steps)
             </h2>
             
@@ -337,26 +341,39 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="flex justify-center gap-4">
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex justify-center gap-4">
+                <button
+                  onClick={() => setCurrentCardIndex(prev => Math.max(0, prev - 1))}
+                  disabled={currentCardIndex === 0}
+                  className="w-12 h-12 flex items-center justify-center bg-white/10 border border-white/20 rounded-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/20 transition-colors backdrop-blur-sm"
+                  aria-label="Previous article"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => setCurrentCardIndex(prev => Math.min(path.length - 1, prev + 1))}
+                  disabled={currentCardIndex === path.length - 1}
+                  className="w-12 h-12 flex items-center justify-center bg-white/10 border border-white/20 rounded-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/20 transition-colors backdrop-blur-sm"
+                  aria-label="Next article"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+              
               <button
-                onClick={() => setCurrentCardIndex(prev => Math.max(0, prev - 1))}
-                disabled={currentCardIndex === 0}
-                className="w-12 h-12 flex items-center justify-center bg-white/10 border border-white/20 rounded-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/20 transition-colors backdrop-blur-sm"
-                aria-label="Previous article"
+                onClick={() => {
+                  setPath([]);
+                  setCurrentCardIndex(0);
+                  setArticleDetails(new Map());
+                }}
+                className="px-6 py-2 bg-white/10 border border-white/20 rounded-lg text-white hover:bg-white/20 transition-colors backdrop-blur-sm"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <button
-                onClick={() => setCurrentCardIndex(prev => Math.min(path.length - 1, prev + 1))}
-                disabled={currentCardIndex === path.length - 1}
-                className="w-12 h-12 flex items-center justify-center bg-white/10 border border-white/20 rounded-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/20 transition-colors backdrop-blur-sm"
-                aria-label="Next article"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
+                Start New Search
               </button>
             </div>
           </div>
