@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import debounce from 'lodash/debounce';
+import { useSwipeable } from "react-swipeable";
 
 interface ArticleDetails {
   title: string;
@@ -111,6 +112,14 @@ export default function Home() {
   // Create refs for the dropdown containers
   const startRef = useRef<HTMLDivElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
+
+  // Move the swipeable handlers to the top level
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => setCurrentCardIndex(prev => Math.min(path.length - 1, prev + 1)),
+    onSwipedRight: () => setCurrentCardIndex(prev => Math.max(0, prev - 1)),
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true
+  });
 
   // Modify the click-outside handler to check if click is inside dropdowns
   useEffect(() => {
@@ -328,7 +337,10 @@ export default function Home() {
               Path Found ({currentCardIndex + 1} of {path.length} steps)
             </h2>
             
-            <div className="relative h-[500px] w-full mb-8">
+            <div
+              {...swipeHandlers}
+              className="relative h-[500px] w-full mb-8 touch-pan-y"
+            >
               {path.map((article, index) => (
                 <ArticleCard 
                   key={article}
@@ -342,7 +354,7 @@ export default function Home() {
             </div>
 
             <div className="flex flex-col items-center gap-4">
-              <div className="flex justify-center gap-4">
+              <div className="hidden md:flex justify-center gap-4">
                 <button
                   onClick={() => setCurrentCardIndex(prev => Math.max(0, prev - 1))}
                   disabled={currentCardIndex === 0}
