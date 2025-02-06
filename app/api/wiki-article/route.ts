@@ -17,21 +17,23 @@ interface WikiArticleResponse {
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const title = searchParams.get('title');
+  const nextTitle = searchParams.get('nextTitle');
+  const isEndArticle = searchParams.get('isEndArticle') === 'true';
 
   if (!title) {
     return NextResponse.json({ error: "Title parameter is required" }, { status: 400 });
   }
 
   try {
-    // Fetch article details from Wikipedia API
     const endpoint = 'https://en.wikipedia.org/w/api.php';
     const params = new URLSearchParams({
       action: 'query',
       titles: title,
       prop: 'extracts|pageimages',
-      exintro: 'true',
+      // Only get intro for end article
+      exintro: isEndArticle ? 'true' : 'false',
       explaintext: 'true',
-      exsentences: '3',
+      exsentences: isEndArticle ? '3' : '100', // Get more content for finding linking sentence
       piprop: 'thumbnail',
       pithumbsize: '400',
       format: 'json',
@@ -47,27 +49,15 @@ export async function GET(request: Request) {
 
     const page = Object.values(data.query.pages)[0];
     
-    // If no Wikipedia image, fetch from Google Custom Search API
-    if (!page.thumbnail?.source) {
-      try {
-        const googleSearchParams = new URLSearchParams({
-          key: process.env.GOOGLE_API_KEY || '',
-          cx: process.env.GOOGLE_SEARCH_ENGINE_ID || '',
-          q: `${title} wikipedia`,
-          searchType: 'image',
-          num: '1',
-        });
-
-        const googleResponse = await fetch(
-          `https://www.googleapis.com/customsearch/v1?${googleSearchParams}`
-        );
-        const googleData = await googleResponse.json();
-        
-        if (googleData.items?.[0]?.link) {
-          page.thumbnail = { source: googleData.items[0].link };
-        }
-      } catch (error) {
-        console.error('Error fetching Google image:', error);
+    if (!isEndArticle && nextTitle && page.extract) {
+      // Find the sentence containing the next article title
+      const sentences = page.extract.match(/[^.!?]+[.!?]+/g) || [];
+      const linkingSentence = sentences.find(sentence => 
+        sentence.toLowerCase().includes(nextTitle.toLowerCase())
+      );
+      
+      if (linkingSentence) {
+        page.extract = linkingSentence.trim();
       }
     }
 
