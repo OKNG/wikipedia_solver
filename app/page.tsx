@@ -234,6 +234,28 @@ export default function Home() {
     }
   }, [path]);
 
+  const fetchRandomArticle = async () => {
+    try {
+      const response = await fetch(
+        'https://en.wikipedia.org/w/api.php?' +
+        new URLSearchParams({
+          action: 'query',
+          format: 'json',
+          list: 'random',
+          rnnamespace: '0',
+          rnlimit: '1',
+          origin: '*'
+        })
+      );
+      
+      const data = await response.json();
+      return data.query.random[0].title;
+    } catch (error) {
+      console.error('Error fetching random article:', error);
+      return null;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 p-8">
       <main className="max-w-2xl mx-auto flex flex-col gap-8 items-center">
@@ -254,6 +276,18 @@ export default function Home() {
                     placeholder="Start Article"
                     className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 backdrop-blur-sm"
                   />
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      const randomArticle = await fetchRandomArticle();
+                      if (randomArticle) setStartArticle(randomArticle);
+                    }}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-white/70 hover:text-white/90 transition-colors"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                  </button>
                   {showStartSuggestions && startSuggestions.length > 0 && (
                     <div 
                       className="absolute z-50 w-full mt-2 backdrop-blur-xl bg-white/10 border border-white/20 rounded-lg shadow-xl overflow-hidden"
@@ -285,6 +319,18 @@ export default function Home() {
                     placeholder="End Article"
                     className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 backdrop-blur-sm"
                   />
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      const randomArticle = await fetchRandomArticle();
+                      if (randomArticle) setEndArticle(randomArticle);
+                    }}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-white/70 hover:text-white/90 transition-colors"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                  </button>
                   {showEndSuggestions && endSuggestions.length > 0 && (
                     <div 
                       className="absolute z-50 w-full mt-2 backdrop-blur-xl bg-white/10 border border-white/20 rounded-lg shadow-xl overflow-hidden"
