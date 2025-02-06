@@ -319,9 +319,14 @@ export default function Home() {
         <div className="space-y-8">
           {path.length === 0 && (
             <>
-              <h1 className="text-4xl font-light tracking-wide text-white">
-                Wiki Game Solver
-              </h1>
+              <div className="text-center space-y-4">
+                <h1 className="text-4xl font-light tracking-wide text-white">
+                  Wiki Game Solver
+                </h1>
+                <p className="text-lg font-light text-white/80">
+                  Find the shortest path between two articles
+                </p>
+              </div>
               
               <form 
                 onSubmit={(e) => {
@@ -346,9 +351,6 @@ export default function Home() {
                           e.preventDefault();
                           e.currentTarget.blur();
                           window.scrollTo({ top: 0, behavior: 'smooth' });
-                          if (startArticle && endArticle) {
-                            findShortestPath();
-                          }
                         }
                       }}
                       onBlur={() => {
@@ -403,9 +405,6 @@ export default function Home() {
                           e.preventDefault();
                           e.currentTarget.blur();
                           window.scrollTo({ top: 0, behavior: 'smooth' });
-                          if (startArticle && endArticle) {
-                            findShortestPath();
-                          }
                         }
                       }}
                       onBlur={() => {
