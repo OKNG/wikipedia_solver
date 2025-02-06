@@ -336,10 +336,17 @@ export default function Home() {
                 <div className="space-y-4">
                   <div className="relative">
                     <input
-                      type="text"
+                      type="search"
+                      enterKeyHint="done"
                       value={startArticle}
                       onChange={handleStartArticleChange}
                       onFocus={() => setShowStartSuggestions(true)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          e.currentTarget.blur();
+                        }
+                      }}
                       placeholder="Start Article"
                       className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 backdrop-blur-sm"
                     />
@@ -379,10 +386,17 @@ export default function Home() {
                   
                   <div className="relative">
                     <input
-                      type="text"
+                      type="search"
+                      enterKeyHint="done"
                       value={endArticle}
                       onChange={handleEndArticleChange}
                       onFocus={() => setShowEndSuggestions(true)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          e.currentTarget.blur();
+                        }
+                      }}
                       placeholder="End Article"
                       className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 backdrop-blur-sm"
                     />
