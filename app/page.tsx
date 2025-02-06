@@ -26,59 +26,66 @@ const ArticleCard = ({
 }) => {
   const diff = index - currentIndex;
   const scale = 1 - Math.min(Math.abs(diff) * 0.1, 0.3);
-  const translateY = diff * 20;
+  const translateX = diff * 100;
   const zIndex = total - Math.abs(diff);
   const opacity = 1 - Math.abs(diff) * 0.2;
 
   return (
     <div 
-      className="absolute w-64"
+      className="absolute w-[360px]"
       style={{
-        transform: `translateX(-50%) translateY(${translateY}px) scale(${scale})`,
+        transform: `translate(calc(-50% + ${translateX}%), 0px) scale(${scale})`,
         left: '50%',
         zIndex,
         opacity,
-        transition: 'all 0.5s ease-out',
+        transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
       }}
     >
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
-        <div className="p-4">
-          <h3 className="text-lg font-bold mb-2 line-clamp-2">
-            <a
-              href={`https://en.wikipedia.org/wiki/${encodeURIComponent(title)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:underline"
-            >
-              {title}
-            </a>
-          </h3>
-          
-          <div className="relative w-full h-40 mb-4 bg-gray-100">
-            {details?.thumbnail?.source ? (
+      <div className="backdrop-blur-xl bg-white/15 rounded-2xl overflow-hidden border border-white/30 shadow-xl" style={{ aspectRatio: '2.5/3.5' }}>
+        <div className="relative h-48">
+          {details?.thumbnail?.source ? (
+            <div className="relative h-full w-full">
               <Image
                 src={details.thumbnail.source}
                 alt={title}
                 fill
-                className="object-cover rounded"
-                sizes="256px"
+                className="object-cover"
+                sizes="288px"
                 priority={index === currentIndex}
               />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-400">
-                {details ? 'No image available' : 'Loading...'}
-              </div>
-            )}
-          </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+            </div>
+          ) : (
+            <div className="h-full bg-gradient-to-br from-purple-500/30 to-blue-500/30 flex items-center justify-center">
+              <div className="animate-pulse text-white/60">Loading...</div>
+            </div>
+          )}
           
-          <div className="min-h-[6rem]">
+          <div className="absolute bottom-0 left-0 right-0 p-4">
+            <h3 className="text-xl font-bold text-white mb-2 drop-shadow-lg line-clamp-2">
+              <a
+                href={`https://en.wikipedia.org/wiki/${encodeURIComponent(title)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-blue-200 transition-colors"
+              >
+                {title}
+              </a>
+            </h3>
+          </div>
+        </div>
+
+        <div className="p-4 bg-gradient-to-b from-black/50 to-transparent h-[calc(100%-12rem)]">
+          <div className="text-white/95">
             {details?.extract ? (
-              <p className="text-gray-700 text-sm line-clamp-6">{details.extract}</p>
+              <p className="text-sm leading-relaxed tracking-wide line-clamp-[12]">
+                {details.extract}
+              </p>
             ) : (
               <div className="space-y-2">
-                <div className="animate-pulse h-4 bg-gray-200 rounded w-3/4"></div>
-                <div className="animate-pulse h-4 bg-gray-200 rounded w-full"></div>
-                <div className="animate-pulse h-4 bg-gray-200 rounded w-2/3"></div>
+                <div className="animate-pulse h-4 bg-white/20 rounded w-3/4"></div>
+                <div className="animate-pulse h-4 bg-white/20 rounded w-full"></div>
+                <div className="animate-pulse h-4 bg-white/20 rounded w-2/3"></div>
               </div>
             )}
           </div>
@@ -334,16 +341,22 @@ export default function Home() {
               <button
                 onClick={() => setCurrentCardIndex(prev => Math.max(0, prev - 1))}
                 disabled={currentCardIndex === 0}
-                className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
+                className="w-12 h-12 flex items-center justify-center bg-white/10 border border-white/20 rounded-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/20 transition-colors backdrop-blur-sm"
+                aria-label="Previous article"
               >
-                Previous
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
               </button>
               <button
                 onClick={() => setCurrentCardIndex(prev => Math.min(path.length - 1, prev + 1))}
                 disabled={currentCardIndex === path.length - 1}
-                className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
+                className="w-12 h-12 flex items-center justify-center bg-white/10 border border-white/20 rounded-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/20 transition-colors backdrop-blur-sm"
+                aria-label="Next article"
               >
-                Next
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
               </button>
             </div>
           </div>
